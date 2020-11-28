@@ -34,14 +34,6 @@ declare function funct:param ( $param ) {
    doc( "../config.xml" )/config/param[ @id = $param ]/text()
 };
 
-declare function funct:xhtml( $app as xs:string, $map as item() ){
-  let $string := file:read-text( file:base-dir() || '../components/' || $app || "/main.tpl.html" )
-  return
-    parse-xml(
-      funct:replace( $string, $map )
-    )
-};
-
 declare function funct:replace( $string, $map ){
   fold-left(
         map:for-each( $map, function( $key, $value ){ map{ $key : $value } } ),
@@ -56,26 +48,7 @@ declare function funct:replace( $string, $map ){
       )
 };
 
-declare function funct:tpl-old( $app, $params ){
-  let $queryTpl := '
-    import module namespace {{appAlias}} = "{{app}}" at "../components/{{app}}/main.xqm";  
-    declare variable $params external;
-    {{appAlias}}:main( $params )'
-  let $appAlias := if( contains( $app, "/") ) then( substring-before( $app, "/") ) else( $app )
-  let $query := replace(
-    replace( $queryTpl, "\{\{app\}\}", $app ), "\{\{appAlias\}\}", $appAlias
-  )
-  return
-    xquery:eval(
-      $query, 
-      map{ 'params': $params }
-    )
-};
-
-
-(:------------------ новый механизм -----------------------------------------:)
-
-declare function funct:xhtml2( $app as xs:string, $map as item(), $componentPath ){
+declare function funct:xhtml( $app as xs:string, $map as item(), $componentPath ){
   let $appAlias := if( contains( $app, "/") ) then( tokenize( $app, "/" )[ last()] ) else( $app )
   let $string := 
     file:read-text(
@@ -120,14 +93,20 @@ declare function funct:tpl( $app, $params ){
               ( $params, map{ '_tpl' : $tpl, '_data' : $getData:funct, '_config' : $config:param } )
             )
           }
-        )
+        ),
+      map { 'time': true() }
       )
-  let $log :=
+  (:
+    let $log :=
     funct:log(
       'profiling.log',
       $app || '--' || $result?time,
-      map{'mode' : 'rewrite'}
+      map{ 'mode' : 'add
+      ' }
     )
+  
+  :)
+  
   return
-     funct:xhtml2( $app, $result?value, $componentPath )
+     funct:xhtml( $app, $result?value, $componentPath )
 };
