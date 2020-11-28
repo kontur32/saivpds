@@ -4,7 +4,7 @@ import module namespace funct="funct" at "../functions/functions.xqm";
 
 declare 
   %rest:GET
-  %rest:path( "/saivpds/t/отчеты/{ $отчет }" )
+  %rest:path( "/saivpds/t/reports/{ $отчет }" )
   %output:method( "xhtml" )
   %output:doctype-public( "www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" )
 function saivpds:main( $отчет as xs:string ){
