@@ -28,10 +28,10 @@ function saivpds:main(){
     
     let $params :=    
        map{
-        'header' : funct:tpl2( 'header', map{} ),
+        'header' : funct:tpl( 'header', map{} ),
         'content' : $содержание,
-        'footer' : funct:tpl2( 'footer', map{} )
+        'footer' : funct:tpl( 'footer', map{} )
       }
     return
-      funct:tpl2( 'main', $params )
+      funct:tpl( 'main', $params )
 };

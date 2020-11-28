@@ -14,10 +14,10 @@ function saivpds:main( $отчет as xs:string ){
     
     let $params :=    
        map{
-        'header' : funct:tpl2( 'header', map{} ),
-        'content' : funct:tpl2( 'content', $содержание ),
-        'footer' : funct:tpl2( 'footer', map{} )
+        'header' : funct:tpl( 'header', map{} ),
+        'content' : funct:tpl( 'content', $содержание ),
+        'footer' : funct:tpl( 'footer', map{} )
        }
     return
-      funct:tpl2( 'main', $params )
+      funct:tpl( 'main', $params )
 };

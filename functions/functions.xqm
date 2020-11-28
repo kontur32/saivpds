@@ -56,7 +56,7 @@ declare function funct:replace( $string, $map ){
       )
 };
 
-declare function funct:tpl( $app, $params ){
+declare function funct:tpl-old( $app, $params ){
   let $queryTpl := '
     import module namespace {{appAlias}} = "{{app}}" at "../components/{{app}}/main.xqm";  
     declare variable $params external;
@@ -88,7 +88,7 @@ declare function funct:xhtml2( $app as xs:string, $map as item(), $componentPath
     )
 };
 
-declare function funct:tpl2( $app, $params ){
+declare function funct:tpl( $app, $params ){
   let $componentPath := '../components'
   let $queryTpl := '
     import module namespace {{appAlias}} = "{{app}}" at "{{rootPath}}/{{app}}/{{appAlias}}.xqm";  
@@ -108,7 +108,7 @@ declare function funct:tpl2( $app, $params ){
       }
     )
   
-  let $tpl := function( $app, $params ){ funct:tpl2( $app, $params ) }
+  let $tpl := function( $app, $params ){ funct:tpl( $app, $params ) }
   let $config := function( $param ){ $config:param( $param ) }
   
   let $result :=
