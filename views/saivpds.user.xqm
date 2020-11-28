@@ -1,13 +1,13 @@
-module namespace inkwi = "inkwi/user";
+module namespace saivpds = "saivpds/teacher";
 
 import module namespace funct="funct" at "../functions/functions.xqm";
 
 declare 
   %rest:GET
-  %rest:path( "/saivpds/u" )
+  %rest:path( "/saivpds/t" )
   %output:method( "xhtml" )
   %output:doctype-public( "www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" )
-function inkwi:main(){
+function saivpds:main(){
     let $form :=
       let $форма := fetch:xml(
         "http://dbx.iro37.ru/zapolnititul/v/forms?path=http://iro37.ru/xqwiki/images/0/03/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D1%81%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%BE%D0%B5_%D0%BF%D0%B8%D1%81%D1%8C%D0%BC%D0%BE_%D0%A3%D0%9D%D0%9E%D0%98.docx"
