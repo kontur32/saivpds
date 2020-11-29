@@ -8,12 +8,12 @@ declare
   %output:method( "html" )
   %output:doctype-public( "www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" )
 function inkwi:main(){
-       let $params :=    
-       map{
+  let $params :=    
+     map{
         'header' : '',
         'content' : funct:tpl( 'login', map{ 'параметр2' : 'ДРУГОЕ ЗНАЧЕНИЕ' } ),
         'footer' : funct:tpl( 'footer', map{} )
       }
-    return
-      funct:tpl( 'main', $params )
+  return
+    funct:tpl( 'main', $params )
 };
