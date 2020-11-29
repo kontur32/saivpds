@@ -26,14 +26,14 @@ function login:main( $login as xs:string, $password as xs:string ){
           'password' : $password
         }
       )
-    )/user/ФИО/text()
+    )/user
   
   let $роль := 
     if( $преподаватель != "" )
     then( map{ 'label' : $преподаватель, 'grants' : 'teacher', 'redirect' : '/saivpds/t' } )
     else(
       if( $студент != "" )
-      then(  map{ 'label' : $студент, 'grants' : 'student', 'redirect' : '/saivpds/s' } )
+      then(  map{ 'label' : $студент/ФИО/text(), 'grants' : 'student', 'redirect' : '/saivpds/s', 'номерЛичногоДела' : $студент/номерЛичногоДела/text() } )
       else( map{} )
     )
   return
@@ -42,6 +42,7 @@ function login:main( $login as xs:string, $password as xs:string ){
       session:set( "login", $login ),
       session:set( "grants", $роль?grants ),
       session:set( "роль", $роль?label ),
+      session:set( "номерЛичногоДела", $роль?номерЛичногоДела ),
       web:redirect(  $роль?redirect )
     )
     else( web:redirect( "/saivpds" ) )

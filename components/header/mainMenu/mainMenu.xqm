@@ -33,7 +33,7 @@ declare function mainMenu:student(){
               Формы для студента
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-             <a class="dropdown-item" href="#">Форма 1</a>
+             <a class="dropdown-item" href="/saivpds/s/reports/uchenik.jour.ail">Пропущенные темы</a>
              <a class="dropdown-item" href="#">Форма 2</a>
           </div>
       </li>
@@ -52,7 +52,7 @@ declare function mainMenu:teacher(){
               Формы для преподавателя
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-             <a class="dropdown-item" href="/saivpds/t/reports/konduit">Журнал пропусков</a>
+             <a class="dropdown-item" href="/saivpds/t/reports/teachers.konduit">Журнал пропусков</a>
              <a class="dropdown-item" href="#">Форма 2</a>
           </div>
       </li>

@@ -3,12 +3,25 @@ module namespace reports = 'content/reports';
 declare function reports:main( $params ){
   let $адресЗапросаСтраницы := 
     switch ( $params?страница )
-    case "konduit"
+    case "teachers.konduit"
       return
-        'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/3a61d3a6-1984-4891-afd3-4c1f9750633a?page=teachers.konduit'
-    case "календарный-план"
+        web:create-url(
+          'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/3a61d3a6-1984-4891-afd3-4c1f9750633a',
+          map{
+            'page' : 'teachers.konduit',
+            'mode' : 'iframe'
+          }
+        )
+    case "uchenik.jour.ail"
       return
-       'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/031fefd3-e1b6-4ce6-885b-601429101680'
+       web:create-url(
+          'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/a2aa28dc-7a83-4a6e-aff6-679f1c9a9ab7',
+          map{
+            'page' : 'uchenik.jour.ail',
+            'id' :  session:get( "номерЛичногоДела" ),
+            'mode' : 'iframe'
+          }
+        )
     default 
       return
         'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/031fefd3-e1b6-4ce6-885b-601429101680'
