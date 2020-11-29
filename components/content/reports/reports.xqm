@@ -12,12 +12,12 @@ declare function reports:main( $params ){
             'mode' : 'iframe'
           }
         )
-    case "uchenik.jour.ail"
+    case "uchenik.jour.ail-new"
       return
        web:create-url(
           'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/a2aa28dc-7a83-4a6e-aff6-679f1c9a9ab7',
           map{
-            'page' : 'uchenik.jour.ail',
+            'page' : 'uchenik.jour.ail-new',
             'номерЛичногоДела' :  session:get( "номерЛичногоДела" ),
             'mode' : 'iframe'
           }
