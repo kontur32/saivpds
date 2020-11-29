@@ -24,7 +24,7 @@ declare function mainMenu:main( $params as map(*) ){
 declare function mainMenu:student(){
   <ul class="navbar-nav mr-auto" >
       <li class="nav-item dropdown" >
-          <a class="nav-link" href="/saivpds/s/" >
+          <a class="nav-link" href="/saivpds/s" >
               Главная
           </a>
       </li>
@@ -43,7 +43,7 @@ declare function mainMenu:student(){
 declare function mainMenu:teacher(){
  <ul class="navbar-nav mr-auto" >
       <li class="nav-item dropdown" >
-          <a class="nav-link" href="/saivpds/t/" >
+          <a class="nav-link" href="/saivpds/t" >
               Главная
           </a>
       </li>

@@ -14,7 +14,7 @@ function saivpds:main( $отчет as xs:string ){
     
     let $params :=    
        map{
-        'header' : funct:tpl( 'header', map{ 'area' : 'teacher' } ),
+        'header' : funct:tpl( 'header', map{ 'area' : 'student' } ),
         'content' : funct:tpl( 'content', $содержание ),
         'footer' : funct:tpl( 'footer', map{} )
        }
