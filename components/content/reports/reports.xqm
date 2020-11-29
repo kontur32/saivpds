@@ -18,7 +18,7 @@ declare function reports:main( $params ){
           'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/a2aa28dc-7a83-4a6e-aff6-679f1c9a9ab7',
           map{
             'page' : 'uchenik.jour.ail',
-            'id' :  session:get( "номерЛичногоДела" ),
+            'номерЛичногоДела' :  session:get( "номерЛичногоДела" ),
             'mode' : 'iframe'
           }
         )
