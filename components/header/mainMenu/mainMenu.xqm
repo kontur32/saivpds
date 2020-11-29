@@ -23,7 +23,7 @@ declare function mainMenu:main( $params as map(*) ){
           [ $items, 's', 'Форма для студента' ]
     default
       return
-        <ul></ul>
+        [ ( [ '', '' ] ), '', '' ]
 
   let $меню :=
     map{
@@ -37,6 +37,7 @@ declare function mainMenu:main( $params as map(*) ){
 
 declare function mainMenu:items( $items, $area, $mainLabel ){
   for $i in $items
+  where $i?1 != ''
   let $href := '/saivpds/' || $area || '/reports/' || $i?2
   return
    <a class="dropdown-item" href="{ $href }">{ $i?1 }</a>       
