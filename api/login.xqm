@@ -30,10 +30,23 @@ function login:main( $login as xs:string, $password as xs:string ){
   
   let $роль := 
     if( $преподаватель != "" )
-    then( map{ 'label' : $преподаватель, 'grants' : 'teacher', 'redirect' : '/saivpds/t' } )
+    then(
+      map{
+        'label' : $преподаватель,
+        'grants' : 'teacher', 
+        'redirect' : '/saivpds/t'
+      }
+    )
     else(
       if( $студент/ФИО/text() != "" )
-      then(  map{ 'label' : $студент/ФИО/text(), 'grants' : 'student', 'redirect' : '/saivpds/s', 'номерЛичногоДела' : $студент/номерЛичногоДела/text() } )
+      then(
+        map{
+          'label' : $студент/ФИО/text(),
+          'grants' : 'student', 
+          'redirect' : '/saivpds/s',
+          'номерЛичногоДела' : $студент/номерЛичногоДела/text()
+        }
+      )
       else( map{} )
     )
   return
