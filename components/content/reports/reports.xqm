@@ -22,6 +22,15 @@ declare function reports:main( $params ){
             'mode' : 'iframe'
           }
         )
+    case "journal"
+      return
+        web:create-url(
+          'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/065edfb3-7f4c-4f67-8ff3-640070b36290',
+          map{
+            'date' : '2020-11-23',
+            'mode' : 'iframe'
+          }
+        )
     default 
       return
         'http://iro37.ru:9984/zapolnititul/api/v2.1/data/publication/031fefd3-e1b6-4ce6-885b-601429101680'

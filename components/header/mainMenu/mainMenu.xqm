@@ -17,7 +17,7 @@ declare function mainMenu:main( $params as map(*) ){
         let $items := 
           (
             [ 'Пропущенные темы', 'uchenik.jour.ail-new' ],
-            [ 'Форма 2', '#' ]
+            [ 'Домашнее задание', 'journal' ]
           )
         return
           [ $items, 's', 'Форма для студента' ]
