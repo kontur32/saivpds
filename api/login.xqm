@@ -15,7 +15,7 @@ function login:main( $login as xs:string, $password as xs:string ){
           'password' : $password
         }
       )
-    )/user/должность/text()
+    )/user
   
   let $студент := 
     fetch:xml(
@@ -32,9 +32,11 @@ function login:main( $login as xs:string, $password as xs:string ){
     if( $преподаватель != "" )
     then(
       map{
-        'label' : $преподаватель,
+        'label' : $преподаватель/ФИО/text(),
         'grants' : 'teacher', 
-        'redirect' : '/saivpds/t'
+        'redirect' : '/saivpds/t',
+        'должность' : $преподаватель/Должность/text(),
+        'номерЛичногоДела' : $преподаватель/номерЛичногоДела/text()
       }
     )
     else(
