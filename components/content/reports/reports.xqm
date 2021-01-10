@@ -55,6 +55,10 @@ declare function reports:main( $params ){
           )
         return
           reports:getData( $url )
+    case "uchenik.list"
+      return
+        $params?_tpl( 'content/reports/uchenik.list', map{} )
+    
     default
       return
         $params?_tpl( 'content/reports/uchenik.profil', map{} )

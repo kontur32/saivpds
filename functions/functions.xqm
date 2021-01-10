@@ -83,6 +83,7 @@ declare function funct:tpl( $app, $params ){
   
   let $tpl := function( $app, $params ){ funct:tpl( $app, $params ) }
   let $config := function( $param ){ $config:param( $param ) }
+  let $getFile := function( $path ){ funct:getFile( $path ) }
   
   let $result :=
     prof:track( 
@@ -90,7 +91,7 @@ declare function funct:tpl( $app, $params ){
           $query, 
           map{ 'params':
             map:merge( 
-              ( $params, map{ '_tpl' : $tpl, '_data' : $getData:funct, '_config' : $config:param } )
+              ( $params, map{ '_tpl' : $tpl, '_data' : $getData:funct, '_config' : $config:param, '_getFile' : $getFile } )
             )
           }
         ),
@@ -109,4 +110,30 @@ declare function funct:tpl( $app, $params ){
   
   return
      funct:xhtml( $app, $result?value, $componentPath )
+};
+
+
+declare
+  %private
+function funct:getFile(  $fileName, $storeID, $access_token ){
+ let $href := 
+   web:create-url(
+     'http://localhost:9984/trac/api/v0.1/u/data/stores/' ||  $storeID,
+     map{
+       'access_token' : $access_token,
+       'path' : $fileName
+     }
+   )
+ return
+   try{ fetch:xml( $href ) }catch*{}
+};
+
+declare
+  %public
+function funct:getFile( $fileName ){
+  funct:getFile(
+    $fileName,
+    $config:param( "data.store.jornal" ), 
+    session:get( 'access_token' )
+  )
 };
