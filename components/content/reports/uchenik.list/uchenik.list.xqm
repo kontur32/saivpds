@@ -2,7 +2,7 @@ module namespace uchenik.list = 'content/reports/uchenik.list';
 
 declare function uchenik.list:main( $params ){
   
-  let $data := $params?_getFile( '/students.xlsx' )
+  let $data := $params?_getFile( '/students.xlsx', 'store.yandex.jornal' )
     
   let $table :=
     <table class = 'table-striped'>

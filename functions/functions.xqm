@@ -83,7 +83,7 @@ declare function funct:tpl( $app, $params ){
   
   let $tpl := function( $app, $params ){ funct:tpl( $app, $params ) }
   let $config := function( $param ){ $config:param( $param ) }
-  let $getFile := function( $path ){ funct:getFile( $path ) }
+  let $getFile := function( $path, $storeLabel ){ funct:getFile( $path, $storeLabel ) }
   
   let $result :=
     prof:track( 
@@ -128,12 +128,23 @@ function funct:getFile(  $fileName, $storeID, $access_token ){
    try{ fetch:xml( $href ) }catch*{}
 };
 
+
+declare
+  %public
+function funct:getFile( $fileName, $storeLabel ){
+  funct:getFile(
+    $fileName,
+    $config:param( $storeLabel ), 
+    session:get( 'access_token' )
+  )
+};
+
 declare
   %public
 function funct:getFile( $fileName ){
   funct:getFile(
     $fileName,
-    $config:param( "data.store.jornal" ), 
+    $config:param( "store.yandex.jornal" ), 
     session:get( 'access_token' )
   )
 };
