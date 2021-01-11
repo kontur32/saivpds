@@ -36,7 +36,7 @@ declare function reports:main( $params ){
     
     case "uchenik.profil"
       return
-        $params?_tpl( 'content/reports/uchenik.profil', map{} )
+        $params?_tpl( 'content/student/uchenik.profil', map{} )
     
     
 	case "uchenik.listTeachers"
