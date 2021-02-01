@@ -21,7 +21,8 @@ declare function mainMenu:main( $params as map(*) ){
             [ 'Домашнее задание', 'journal' ],
             [ 'Личная страница', 'uchenik.profil' ],
             [ 'Список преподавателей', 'uchenik.listTeachers' ],
-            [ 'Список студентов', 'uchenik.list' ]
+            [ 'Список студентов', 'uchenik.list' ],
+            [ 'Сводная ведомость', 'vedost.semestr' ]
           )
         return
           [ $items, 's', 'Форма для студента' ]

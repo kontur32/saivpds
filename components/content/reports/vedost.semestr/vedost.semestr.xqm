@@ -2,7 +2,7 @@ module namespace vedost.semestr = 'content/reports/vedost.semestr';
 
 declare function vedost.semestr:main( $params ){
   
-  let $семестр := request:parameter( 'семестр', '4' )
+  let $семестр := request:parameter( 'семестр', 4 )
   
   let $data := 
     fetch:text(
