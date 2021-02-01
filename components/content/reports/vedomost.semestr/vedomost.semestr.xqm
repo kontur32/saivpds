@@ -1,10 +1,10 @@
-module namespace vedost.semestr = 'content/reports/vedost.semestr';
+module namespace vedomost.semestr = 'content/reports/vedomost.semestr';
 
-declare function vedost.semestr:main( $params ){
+declare function vedomost.semestr:main( $params ){
   let $dataRaw :=
     $params?_getFile(
       'Аттестация/ДО_набор.xlsx',
-      $params?_config( "api.functions.path" ) || 'vedost.semestr.xq'
+      $params?_config( "api.functions.path" ) || 'vedomost.semestr.xq'
     )
   
   let $всеГруппы := json:parse( $dataRaw )/json/группа
@@ -18,11 +18,11 @@ declare function vedost.semestr:main( $params ){
   let $текущийСеместр := request:parameter( 'семестр', $списокСеместров[ 1 ] )
 
   let $строкиТаблицы :=
-    vedost.semestr:успеваемостьЗаСеместр(
+    vedomost.semestr:успеваемостьЗаСеместр(
        $всеСеместры[ номерСеместра/text() = $текущийСеместр ]/студенты/студент
       )
   let $среднийБаллПоСеместрам := 
-    vedost.semestr:среднийБаллПоСеместрам(
+    vedomost.semestr:среднийБаллПоСеместрам(
       $всеСеместры
     )
   
@@ -52,7 +52,7 @@ declare function vedost.semestr:main( $params ){
     }
 };
 
-declare function vedost.semestr:успеваемостьЗаСеместр( $студенты as element( студент )* ){
+declare function vedomost.semestr:успеваемостьЗаСеместр( $студенты as element( студент )* ){
   <div>
     <table class = 'table-striped'>
         <thead>
@@ -85,7 +85,7 @@ declare function vedost.semestr:успеваемостьЗаСеместр( $с�
     </div>
 };
 
-declare function vedost.semestr:среднийБаллПоСеместрам( $семестры as element( семестр )* ){
+declare function vedomost.semestr:среднийБаллПоСеместрам( $семестры as element( семестр )* ){
     <table class = 'table-striped'>
         <thead>
           <tr class = "text-center">
