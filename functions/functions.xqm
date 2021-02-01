@@ -114,7 +114,7 @@ declare function funct:tpl( $app, $params ){
 
 
 declare
-  %private
+  %public
 function funct:getFile(  $fileName, $storeID, $access_token ){
  let $href := 
    web:create-url(
