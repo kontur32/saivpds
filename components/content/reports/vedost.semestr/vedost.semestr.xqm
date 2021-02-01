@@ -7,7 +7,7 @@ declare function vedost.semestr:main( $params ){
   let $data := 
     fetch:text(
       web:create-url(
-        'http://localhost:9984/trac/api/v0.1/u/data/stores/9599bdf3-17d0-4183-bf5e-8563cc7b9b61',
+        'http://localhost:9984/trac/api/v0.1/u/data/stores/' || $params?_config('store.yandex.jornal'),
         map{
           'access_token' : session:get('access_token'),
           'path' : 'Аттестация/ДО_набор_2018-tmp.xlsx',
