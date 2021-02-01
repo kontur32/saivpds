@@ -2,8 +2,7 @@ module namespace vedost.semestr = 'content/reports/vedost.semestr';
 
 declare function vedost.semestr:main( $params ){
   
-  let $семестр := request:parameter( 'семестр', 4 )
-  let $группа := request:parameter( 'группа', "ДО 2018" )
+  
   
   let $dataRaw := 
     fetch:text(
@@ -11,15 +10,20 @@ declare function vedost.semestr:main( $params ){
         'http://localhost:9984/trac/api/v0.1/u/data/stores/' || $params?_config('store.yandex.jornal'),
         map{
           'access_token' : session:get('access_token'),
-          'path' : 'Аттестация/ДО_набор_2018-tmp.xlsx',
-          'xq' : 'http://localhost:9984/static/saivpds/funct/ocenkiZaSemestr.xq',
-          'семестр' : $семестр
+          'path' : 'Аттестация/ДО_набор.xlsx',
+          'xq' : 'http://localhost:9984/static/saivpds/funct/ocenkiZaSemestr.xq'
         }
       )
     )
   let $dataParsed := json:parse( $dataRaw )/json/группа
+  
+  let $семестр := request:parameter( 'семестр', 1 )
+  let $группа := request:parameter( 'группа', "ДО 2018" )
+  
   let $data := $dataParsed[ номерГруппы = $группа ]
   let $списокСеместров := $data/семестры/семестр/номерСеместра/text()
+  
+  
   
   let $строкиТаблицы :=
     vedost.semestr:строкиТаблицы(
@@ -38,7 +42,7 @@ declare function vedost.semestr:main( $params ){
         <span class="ml-2">{ $i }</span>
       )
       else(
-        <a class="ml-2" href = "{'?группа=' || $i || '&amp;семестр=' || $семестр }"> { $i }</a>
+        <a class="ml-2" href = "{'?группа=' || $i }"> { $i }</a>
       )
   
   let $семестры := 
