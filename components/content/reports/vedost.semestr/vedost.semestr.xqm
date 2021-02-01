@@ -1,76 +1,58 @@
 module namespace vedost.semestr = 'content/reports/vedost.semestr';
 
 declare function vedost.semestr:main( $params ){
-  let $dataRaw := 
-    fetch:text(
-      web:create-url(
-        'http://localhost:9984/trac/api/v0.1/u/data/stores/' || $params?_config('store.yandex.jornal'),
-        map{
-          'access_token' : session:get( 'access_token' ),
-          'path' : 'Аттестация/ДО_набор.xlsx',
-          'xq' : $params?_config( "api.functions.path" ) || 'vedost.semestr.xq'
-        }
-      )
-    )
-  
   let $dataRaw :=
     $params?_getFile(
       'Аттестация/ДО_набор.xlsx',
       $params?_config( "api.functions.path" ) || 'vedost.semestr.xq'
     )
   
-  let $dataParsed := json:parse( $dataRaw )/json/группа
+  let $всеГруппы := json:parse( $dataRaw )/json/группа
+  let $списокГрупп := $всеГруппы/номерГруппы/text()
+  let $текущаяГруппа := request:parameter( 'группа', $списокГрупп[ 1 ] )
+  
+  let $группа := $всеГруппы[ номерГруппы = $текущаяГруппа ]
+  let $всеСеместры := $группа/семестры/семестр
+  let $списокСеместров := $всеСеместры[ студенты ]/номерСеместра/text()
+  
+  let $текущийСеместр := request:parameter( 'семестр', $списокСеместров[ 1 ] )
 
-  let $группа := request:parameter( 'группа', $dataParsed[ 1 ]/номерГруппы/text() )
-  
-  let $data := $dataParsed[ номерГруппы = $группа ]
-  let $списокСеместров := $data/семестры/семестр/номерСеместра/text()
-  
-  let $семестр := request:parameter( 'семестр', $списокСеместров[ 1 ] )
-  
-  
   let $строкиТаблицы :=
-    vedost.semestr:строкиТаблицы(
-       $data/семестры/семестр[номерСеместра/text() = $семестр ]/студенты/студент
+    vedost.semestr:успеваемостьЗаСеместр(
+       $всеСеместры[ номерСеместра/text() = $текущийСеместр ]/студенты/студент
       )
   let $среднийБаллПоСеместрам := 
     vedost.semestr:среднийБаллПоСеместрам(
-      $data/семестры/семестр
+      $всеСеместры
     )
   
-  let $группы := 
-    for $i in $dataParsed/номерГруппы/text()
+  let $группыМеню := 
+    for $i in $списокГрупп
     return
-      if( $i = $группа )
-      then(
-        <span class="ml-2">{ $i }</span>
-      )
-      else(
-        <a class="ml-2" href = "{'?группа=' || $i }"> { $i }</a>
-      )
+      if( $i = $текущаяГруппа )
+      then( <span class="ml-2">{ $i }</span> )
+      else( <a class="ml-2" href = "{'?группа=' || $i }"> { $i }</a> )
   
-  let $семестры := 
-    for $i in $data/семестры/семестр[ студенты ]/номерСеместра/text()
+  let $семестрыМеню := 
+    for $i in $списокСеместров
     return
-      if( $i = $семестр )
-      then(
-        <span class="ml-2">{ $i }</span>
-      )
+      if( $i = $текущийСеместр )
+      then( <span class="ml-2">{ $i }</span> )
       else(
-        <a class="ml-2" href = "{'?семестр=' || $i || '&amp;группа=' || $группа}"> { $i }</a>
+        <a class="ml-2" href = "{'?семестр=' || $i || '&amp;группа=' || $текущаяГруппа}"> { $i }</a>
       )
       
   return
     map{
-      'семестры' : $семестры,
-      'группы' : $группы,
-      'семестр' : $семестр,
-      'таблица' : $строкиТаблицы,
+      'семестры' : $семестрыМеню,
+      'группы' : $группыМеню,
+      'семестр' : $текущийСеместр,
+      'успеваемостьЗаСеместр' : $строкиТаблицы,
       'среднийБаллПоСеместрам' : $среднийБаллПоСеместрам
     }
 };
 
-declare function vedost.semestr:строкиТаблицы( $data as element( студент )* ){
+declare function vedost.semestr:успеваемостьЗаСеместр( $студенты as element( студент )* ){
   <div>
     <table class = 'table-striped'>
         <thead>
@@ -82,7 +64,7 @@ declare function vedost.semestr:строкиТаблицы( $data as element( с
         </thead>
         <tbody>
          {  
-           for $i in $data
+           for $i in $студенты
            return
              <tr>
                <td>{ $i/фио/text() }</td>
@@ -94,7 +76,7 @@ declare function vedost.semestr:строкиТаблицы( $data as element( с
             <th colspan='2' >Срений балл группы</th>
             <th class = "text-center">{
               round(
-                avg( $data/средняяОценка/text() ), 2
+                avg( $студенты/средняяОценка/text() ), 2
              )
             }</th>
           </tr>
@@ -103,8 +85,7 @@ declare function vedost.semestr:строкиТаблицы( $data as element( с
     </div>
 };
 
-declare function vedost.semestr:среднийБаллПоСеместрам( $data as element( семестр )* ){
-  <div>
+declare function vedost.semestr:среднийБаллПоСеместрам( $семестры as element( семестр )* ){
     <table class = 'table-striped'>
         <thead>
           <tr class = "text-center">
@@ -115,7 +96,7 @@ declare function vedost.semestr:среднийБаллПоСеместрам( $d
         </thead>
         <tbody>
           {
-            for $i in $data
+            for $i in $семестры
             return
               <tr class = "text-center">
                 <td >{ $i/номерСеместра/text() }</td>
@@ -127,11 +108,10 @@ declare function vedost.semestr:среднийБаллПоСеместрам( $d
             <th colspan='2' >Срений за весь период</th>
             <th class = "text-center">{
               round(
-                avg( $data/студенты/студент/средняяОценка ), 2
+                avg( $семестры/студенты/студент/средняяОценка ), 2
              )
             }</th>
           </tr>
         </tbody>
     </table>
- </div>
 };
