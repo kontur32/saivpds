@@ -1,28 +1,32 @@
 module namespace vedost.semestr = 'content/reports/vedost.semestr';
 
 declare function vedost.semestr:main( $params ){
-  
-  
-  
   let $dataRaw := 
     fetch:text(
       web:create-url(
         'http://localhost:9984/trac/api/v0.1/u/data/stores/' || $params?_config('store.yandex.jornal'),
         map{
-          'access_token' : session:get('access_token'),
+          'access_token' : session:get( 'access_token' ),
           'path' : 'Аттестация/ДО_набор.xlsx',
-          'xq' : 'http://localhost:9984/static/saivpds/funct/ocenkiZaSemestr.xq'
+          'xq' : $params?_config( "api.functions.path" ) || 'vedost.semestr.xq'
         }
       )
     )
-  let $dataParsed := json:parse( $dataRaw )/json/группа
   
-  let $семестр := request:parameter( 'семестр', 1 )
-  let $группа := request:parameter( 'группа', "ДО 2018" )
+  let $dataRaw :=
+    $params?_getFile(
+      'Аттестация/ДО_набор.xlsx',
+      $params?_config( "api.functions.path" ) || 'vedost.semestr.xq'
+    )
+  
+  let $dataParsed := json:parse( $dataRaw )/json/группа
+
+  let $группа := request:parameter( 'группа', $dataParsed[ 1 ]/номерГруппы/text() )
   
   let $data := $dataParsed[ номерГруппы = $группа ]
   let $списокСеместров := $data/семестры/семестр/номерСеместра/text()
   
+  let $семестр := request:parameter( 'семестр', $списокСеместров[ 1 ] )
   
   
   let $строкиТаблицы :=

@@ -83,7 +83,7 @@ declare function funct:tpl( $app, $params ){
   
   let $tpl := function( $app, $params ){ funct:tpl( $app, $params ) }
   let $config := function( $param ){ $config:param( $param ) }
-  let $getFile := function( $path, $storeLabel ){ funct:getFile( $path, $storeLabel ) }
+  let $getFile := function( $path,$xq ){ funct:getFile( $path, $xq ) }
   
   let $result :=
     prof:track( 
@@ -115,26 +115,43 @@ declare function funct:tpl( $app, $params ){
 
 declare
   %public
-function funct:getFile(  $fileName, $storeID, $access_token ){
+function funct:getFile(  $fileName, $xq, $storeID, $access_token ){
  let $href := 
    web:create-url(
-     'http://localhost:9984/trac/api/v0.1/u/data/stores/' ||  $storeID,
+     $config:param( "api.method.getData" ) || 'stores/' ||  $storeID,
      map{
        'access_token' : $access_token,
-       'path' : $fileName
+       'path' : $fileName,
+       'xq' : $xq
      }
    )
  return
-   try{ fetch:xml( $href ) }catch*{}
+   try{
+     fetch:xml( $href )
+   }catch*{
+     try{ fetch:text( $href ) }catch*{}
+   }
 };
 
 
 declare
   %public
-function funct:getFile( $fileName, $storeLabel ){
+function funct:getFile( $fileName, $xq, $storeLabel ){
   funct:getFile(
     $fileName,
+    $xq,
     $config:param( $storeLabel ), 
+    session:get( 'access_token' )
+  )
+};
+
+declare
+  %public
+function funct:getFile( $fileName, $xq ){
+  funct:getFile(
+    $fileName,
+    $xq,
+    $config:param( "store.yandex.jornal" ), 
     session:get( 'access_token' )
   )
 };
@@ -144,6 +161,7 @@ declare
 function funct:getFile( $fileName ){
   funct:getFile(
     $fileName,
+    '.',
     $config:param( "store.yandex.jornal" ), 
     session:get( 'access_token' )
   )
