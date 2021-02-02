@@ -59,6 +59,7 @@ declare function vedomost.semestr:успеваемостьЗаСеместр( $�
           <tr class = "text-center">
             <th>Студент</th>
             <th>Оценок</th>
+            <th>Долгов</th>
             <th>Средний балл</th>
           </tr>
         </thead>
@@ -69,6 +70,7 @@ declare function vedomost.semestr:успеваемостьЗаСеместр( $�
              <tr>
                <td>{ $i/фио/text() }</td>
                <td class = "text-center">{ $i/количествоОценок/text() }</td>
+               <td class = "text-center">{ max( $студенты/количествоОценок/text() ) - $i/количествоОценок/text() }</td>
                <td class = "text-center">{ $i/средняяОценка/text() }</td>
              </tr>
          }
