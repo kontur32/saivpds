@@ -10,7 +10,8 @@ declare function mainMenu:main( $params as map(*) ){
             [ 'Журнал пропусков', 'teachers.konduit' ],
             [ 'Табель', 'teachers.tabel' ],
             [ 'Форма 2', '#' ],
-            [ 'Сводная ведомость', 'vedomost.semestr' ]
+            [ 'Успеваемость за семестр', 'vedomost.semestr' ],
+            [ 'Динамика по семестрам', 'vedomost.dynamics' ]
           )
         return
            [ $items, 't', 'Форма для преподавателя' ]

@@ -61,6 +61,9 @@ declare function reports:main( $params ){
     case "vedomost.semestr"
        return
          $params?_tpl( 'content/reports/vedomost.semestr', map{} )
+    case "vedomost.dynamics"
+       return
+         $params?_tpl( 'content/reports/vedomost.dynamics', map{} )
     
     default
       return
