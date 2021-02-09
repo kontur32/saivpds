@@ -85,7 +85,7 @@ declare function vedomost.dynamics:успеваемостьЗаСеместр(
                }</td>
              </tr>
          }
-          <tr>
+          <tr id = 'avg-total-sem'>
             <th></th>
             <th>По группе</th>
             {
@@ -97,7 +97,7 @@ declare function vedomost.dynamics:успеваемостьЗаСеместр(
                  let $средняяОценка := 
                    round( avg( $оценка ), 1 ) 
                  return
-                   <th class = "text-center">{ $средняяОценка }</th>
+                   <th class = "text-center" >{ $средняяОценка }</th>
             }
             <th class = "text-center">{
               let $средниеОценки := 
