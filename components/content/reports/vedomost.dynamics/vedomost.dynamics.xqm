@@ -79,7 +79,7 @@ declare function vedomost.dynamics:успеваемостьЗаСеместр(
                   let $средниеОценки := 
                      $семестры
                      /студенты/студент[ фио/text() = $i ]
-                     /средняяОценка[ number() > 0 ]/number()
+                     /средняяОценка/number()
                   return
                      round( avg( $средниеОценки ), 1 )
                }</td>
@@ -93,7 +93,7 @@ declare function vedomost.dynamics:успеваемостьЗаСеместр(
                  let $оценка := 
                    $семестры[ номерСеместра/text() = $j ]
                    /студенты/студент
-                   /средняяОценка[ number() > 0 ]/number()
+                   /средняяОценка/number()
                  let $средняяОценка := 
                    round( avg( $оценка ), 1 ) 
                  return
