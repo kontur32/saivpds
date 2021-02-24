@@ -34,9 +34,21 @@ declare function diploma:getDipolma( $id ){
         <cell id = 'ИмяСтудента' contentType = 'field'>{ $data/cell[@label = 'Имя']/text() }</cell>
         <cell id = 'ОтчествоСтудента' contentType = 'field'>{ $data/cell[@label = 'Отчество']/text() }</cell>
         <cell id = 'сан' contentType = 'field'>{ $data/cell[@label = 'Сан']/text() }</cell>
-        <cell id = 'ДатаРождения' contentType = 'field'>{ $data/cell[@label = 'дата рождения']/text() }</cell>
+        <cell id = 'ДатаРождения' contentType = 'field'>{
+          replace(
+             $data/cell[ @label = 'дата рождения' ]/text(),
+             '(\d{4})-(\d{2})-(\d{2})',
+             '$3.$2.$1'
+           )
+        }</cell>
         <cell id = 'РегистрационныйНомерДиплом' contentType = 'field'>{ $data/cell[@label = 'Номер диплома']/text() }</cell>
-        <cell id = 'ДатаВыдачиДиплом' contentType = 'field'>{ $data/cell[@label = 'Дата диплома']/text() }</cell>
+        <cell id = 'ДатаВыдачиДиплом' contentType = 'field'>{
+          replace(
+             $data/cell[ @label = 'Дата диплома' ]/text(),
+             '(\d{4})-(\d{2})-(\d{2})',
+             '$3.$2.$1'
+           )
+        }</cell>
         <cell id = 'Предыдущий документ об образовании' contentType = 'field'>{ $data/cell[@label = 'Предыдущий документ об образовании' ]/text() }</cell>
       </row>
       <row id="tables">
