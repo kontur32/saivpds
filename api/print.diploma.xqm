@@ -12,9 +12,20 @@ function diploma:main( $id ){
 };
 
 declare function diploma:getDipolma( $id ){
+  let $оценки := ( 'удовл.', 'хорошо', 'отлично' )
+  
   let $data :=
     funct:getFile( 'students.xlsx', '.'
     )/file/table[ @label = 'ОЗО 2016' ]/row[cell[@label="номер личного дела"] = $id ]
+  
+  let $оценкиСтудента :=
+    funct:getFile( 'Аттестация/ДО_набор.xlsx', '.'
+    )/file/table[ @label = 'ОЗО 2016' ]/row
+  
+  let $номер := count( $оценкиСтудента[ 1 ]/cell[ text() = $id ]/preceding-sibling::* ) + 1
+  
+  let $курсовые := 
+    $оценкиСтудента[ cell[ @label = "Форма отчетности" ] = "курсовая работа" ]
   
   let $fields := 
     <table>
@@ -27,6 +38,20 @@ declare function diploma:getDipolma( $id ){
         <cell id = 'РегистрационныйНомерДиплом' contentType = 'field'>{ $data/cell[@label = 'Номер диплома']/text() }</cell>
         <cell id = 'ДатаВыдачиДиплом' contentType = 'field'>{ $data/cell[@label = 'Дата диплома']/text() }</cell>
         <cell id = 'Предыдущий документ об образовании' contentType = 'field'>{ $data/cell[@label = 'Предыдущий документ об образовании' ]/text() }</cell>
+      </row>
+      <row id="tables">
+        <cell id="курсовые">
+          <table>
+            {
+              for $i in $курсовые
+              return
+                <row>
+                  <cell>{ $i/cell[ 1 ]/text() }</cell>
+                  <cell>{ $оценки[ $i/cell[ $номер ]/number() - 2 ] }</cell>
+                </row>
+            }            
+          </table>
+        </cell>
       </row>
     </table>
   
@@ -55,7 +80,7 @@ declare function diploma:getDipolma( $id ){
   let $response := 
      http:send-request (
         $request,
-        'http://dbx.iro37.ru/api/v1/ooxml/docx/template/complete'
+        'http://localhost:9984/api/v1/ooxml/docx/template/complete'
       )
   return
      (
