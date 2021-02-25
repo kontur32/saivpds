@@ -2,13 +2,15 @@ module namespace diploma = "/saivpds/api/v01/print.diploma";
 
 import module namespace config = "app/config" at '../functions/config.xqm';
 import module namespace funct = "funct" at '../functions/functions.xqm';
+import module namespace dateTime = 'dateTime' at 'http://iro37.ru/res/repo/dateTime.xqm';
 
 declare 
   %rest:GET
   %rest:query-param( "id", "{ $id }" )
+  %rest:query-param( "group", "{ $group }" )
   %rest:path( "/saivpds/api/v01/print.diploma.1" )
-function diploma:main( $id ){
-  let $fields := diploma:getDipolma.1( $id )
+function diploma:main( $id, $group ){
+  let $fields := diploma:getDipolma.1( $id, $group )
   let $fileName := 'diplom.docx'
   let $templatePath := 
     'http://dbx.iro37.ru/zapolnititul/api/v2/forms/f734020a-8355-4903-aaaa-f5ddb1a97042/template'
@@ -76,10 +78,10 @@ return
   </table>
 };
 
-declare function diploma:getDipolma.1( $id ){
+declare function diploma:getDipolma.1( $id, $group ){
   let $data :=
     funct:getFile( 'students.xlsx', '.'
-    )/file/table[ @label = 'ОЗО 2016' ]/row[cell[@label="номер личного дела"] = $id ]
+    )/file/table[ @label = $group ]/row[cell[@label="номер личного дела"] = $id ]
   
   let $курсовые := 
     funct:getFileWithParams( 
@@ -87,7 +89,7 @@ declare function diploma:getDipolma.1( $id ){
         'http://localhost:9984/static/saivpds/funct/ocenki.student.xq',
         map{
           'id' : $id,
-          'group' : 'ОЗО 2016'
+          'group' : $group
         }
       )
       /json/оценки/дисциплина[ формаОтчетности/text() = "курсовая работа" ]
@@ -102,10 +104,15 @@ return
         <cell id = 'имяХиротонии' contentType = 'field'>{ $data/cell[@label = 'Имя в монашестве']/text() }</cell>
         <cell id = 'ДатаРождения' contentType = 'field'>{
           replace(
-             $data/cell[ @label = 'дата рождения' ]/text(),
+              xs:string(
+                dateTime:dateParse(
+                  $data/cell[ @label = 'дата рождения' ]/text()
+                )
+              ),
              '(\d{4})-(\d{2})-(\d{2})',
              '$3.$2.$1'
            )
+         
         }</cell>
         <cell id = 'РегистрационныйНомерДиплом' contentType = 'field'>{ $data/cell[@label = 'Номер диплома']/text() }</cell>
         <cell id = 'ДатаВыдачиДиплом' contentType = 'field'>{
