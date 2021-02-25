@@ -6,34 +6,100 @@ import module namespace funct = "funct" at '../functions/functions.xqm';
 declare 
   %rest:GET
   %rest:query-param( "id", "{ $id }" )
-  %rest:path( "/saivpds/api/v01/print.diploma" )
+  %rest:path( "/saivpds/api/v01/print.diploma.1" )
 function diploma:main( $id ){
-  diploma:getDipolma( $id )
+  let $fields := diploma:getDipolma.1( $id )
+  let $fileName := 'diplom.docx'
+  let $templatePath := 
+    'http://dbx.iro37.ru/zapolnititul/api/v2/forms/f734020a-8355-4903-aaaa-f5ddb1a97042/template'
+  return
+     diploma:fillTemplate( $fields, $templatePath, $fileName )
 };
 
-declare function diploma:getDipolma( $id ){
-  let $оценки := ( 'удовл.', 'хорошо', 'отлично' )
+declare 
+  %rest:GET
+  %rest:query-param( "id", "{ $id }" )
+  %rest:query-param( "group", "{ $group }" )
+  %rest:path( "/saivpds/api/v01/print.diploma.2" )
+function diploma:main2( $id, $group ){
+  let $fields := diploma:getDipolma.2( $id, $group )
+  let $fileName := 'diplom.docx'
+  let $templatePath := 
+    'http://dbx.iro37.ru/zapolnititul/api/v2/forms/4d902444-d4d0-4b89-86d1-da9548d3e765/template'
+  return
+     diploma:fillTemplate( $fields, $templatePath, $fileName )
+};
+
+declare function diploma:getDipolma.2( $id, $group ){
+  let $формыОтчетности := ( 'экзамен', 'диф.зачет', 'зачет' )
+  let $notes := 
+    funct:getFileWithParams( 
+        'Аттестация/ДО_набор.xlsx',
+        'http://localhost:9984/static/saivpds/funct/ocenki.student.xq',
+        map{
+          'id' : $id,
+          'group' : $group
+        }
+      )
+      /json/оценки/дисциплина
   
+let $оценкиПоПредметам := 
+      <table>
+        {
+          for $i in $notes
+          where $i[ формаОтчетности/text() = ( 'экзамен', 'диф.зачет', 'зачет' ) ]
+          order by $i/семестр/text()
+          let $название := $i/название/text()
+          group by $название
+          return
+            <row>
+              <cell>{ $название }</cell>
+              <cell>{ $i[ last() ]/ЗЕТ/text() }</cell>
+              <cell>{ $i[ last() ]/оценкаПрописью/text() }</cell>
+            </row>
+        }
+      </table>
+
+let $ВКР :=
+  $notes[ формаОтчетности/text() = "выпускная квалификационная работа"]
+return
+  <table>
+    <row  id = 'fields'>
+      <cell id = "названиеВКР" contentType = 'field'>{ $ВКР/название/text()}</cell>
+      <cell id = "оцВКР" contentType = 'field'>{ $ВКР/оценкаПрописью/text() }</cell>
+    </row>
+    <row id = 'tables'>
+      <cell id = 'оценки'>
+        { $оценкиПоПредметам }
+      </cell>
+    </row>
+  </table>
+};
+
+declare function diploma:getDipolma.1( $id ){
   let $data :=
     funct:getFile( 'students.xlsx', '.'
     )/file/table[ @label = 'ОЗО 2016' ]/row[cell[@label="номер личного дела"] = $id ]
   
-  let $оценкиСтудента :=
-    funct:getFile( 'Аттестация/ДО_набор.xlsx', '.'
-    )/file/table[ @label = 'ОЗО 2016' ]/row
-  
-  let $номер := count( $оценкиСтудента[ 1 ]/cell[ text() = $id ]/preceding-sibling::* ) + 1
-  
   let $курсовые := 
-    $оценкиСтудента[ cell[ @label = "Форма отчетности" ] = "курсовая работа" ]
-  
-  let $fields := 
+    funct:getFileWithParams( 
+        'Аттестация/ДО_набор.xlsx',
+        'http://localhost:9984/static/saivpds/funct/ocenki.student.xq',
+        map{
+          'id' : $id,
+          'group' : 'ОЗО 2016'
+        }
+      )
+      /json/оценки/дисциплина[ формаОтчетности/text() = "курсовая работа" ]
+
+return
     <table>
       <row  id = 'fields'>
         <cell id = 'ФамилияСтудента' contentType = 'field'>{ $data/cell[@label = 'Фамилия']/text() }</cell>
         <cell id = 'ИмяСтудента' contentType = 'field'>{ $data/cell[@label = 'Имя']/text() }</cell>
         <cell id = 'ОтчествоСтудента' contentType = 'field'>{ $data/cell[@label = 'Отчество']/text() }</cell>
         <cell id = 'сан' contentType = 'field'>{ $data/cell[@label = 'Сан']/text() }</cell>
+        <cell id = 'имяХиротонии' contentType = 'field'>{ $data/cell[@label = 'Имя в монашестве']/text() }</cell>
         <cell id = 'ДатаРождения' contentType = 'field'>{
           replace(
              $data/cell[ @label = 'дата рождения' ]/text(),
@@ -58,18 +124,20 @@ declare function diploma:getDipolma( $id ){
               for $i in $курсовые
               return
                 <row>
-                  <cell>{ $i/cell[ 1 ]/text() }</cell>
-                  <cell>{ $оценки[ $i/cell[ $номер ]/number() - 2 ] }</cell>
+                  <cell>{ $i/название/text() }</cell>
+                  <cell>{ $i/оценкаПрописью/text() }</cell>
                 </row>
             }            
           </table>
         </cell>
       </row>
     </table>
-  
+};
+
+declare function diploma:fillTemplate( $fields, $templatePath, $fileName ){
   let $template :=
     fetch:binary(
-      'http://dbx.iro37.ru/zapolnititul/api/v2/forms/f734020a-8355-4903-aaaa-f5ddb1a97042/template'
+      $templatePath
     )
   let $request :=
       <http:request method='post'>
@@ -85,8 +153,6 @@ declare function diploma:getDipolma( $id ){
         </http:multipart> 
       </http:request>
     
-  let $fileName := 'diplom.docx'
-  
   let $ContentDispositionValue := 
       "attachment; filename=" || iri-to-uri( $fileName  )
   let $response := 

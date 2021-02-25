@@ -136,7 +136,7 @@ function funct:getFile(  $fileName, $xq, $storeID, $access_token ){
 
 declare
   %public
-function funct:getFile( $fileName, $xq, $storeLabel ){
+function funct:getFile( $fileName, $xq, $storeLabel as xs:string ){
   funct:getFile(
     $fileName,
     $xq,
@@ -165,4 +165,36 @@ function funct:getFile( $fileName ){
     $config:param( "store.yandex.jornal" ), 
     session:get( 'access_token' )
   )
+};
+
+
+declare
+  %public
+function funct:getFileWithParams(  $fileName, $xq, $params as map(*), $access_token ){
+ let $href := 
+   web:create-url(
+     $config:param( "api.method.getData" ) || 'stores/' ||  $config:param( "store.yandex.jornal" ),
+     map:merge(
+       (
+         $params,
+         map{
+           'access_token' : $access_token,
+           'path' : $fileName,
+           'xq' : $xq
+         }
+       )
+     )
+   )
+ return
+   try{
+     fetch:xml( $href )
+   }catch*{
+     try{ fetch:text( $href ) }catch*{}
+   }
+};
+
+declare
+  %public
+function funct:getFileWithParams(  $fileName, $xq, $params as map(*) ){
+  funct:getFileWithParams( $fileName, $xq, $params, session:get( 'access_token' ) )
 };
