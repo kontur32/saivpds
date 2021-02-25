@@ -122,7 +122,7 @@ return
              '$3.$2.$1'
            )
         }</cell>
-        <cell id = 'Предыдущий документ об образовании' contentType = 'field'>{ $data/cell[@label = 'Предыдущий документ об образовании' ]/text() }</cell>
+        <cell id = 'предыдущий документ об образовании' contentType = 'field'>{ $data/cell[@label = 'Предыдущий документ об образовании' ]/text() }</cell>
       </row>
       <row id="tables">
         <cell id="курсовые">
