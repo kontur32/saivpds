@@ -11,7 +11,7 @@ declare
   %rest:path( "/saivpds/api/v01/print.diploma.1" )
 function diploma:main( $id, $group ){
   let $fields := diploma:getDipolma.1( $id, $group )
-  let $fileName := 'diplom.docx'
+  let $fileName := 'diplom-1.docx'
   let $templatePath := 
     'http://dbx.iro37.ru/zapolnititul/api/v2/forms/f734020a-8355-4903-aaaa-f5ddb1a97042/template'
   return
@@ -25,11 +25,60 @@ declare
   %rest:path( "/saivpds/api/v01/print.diploma.2" )
 function diploma:main2( $id, $group ){
   let $fields := diploma:getDipolma.2( $id, $group )
-  let $fileName := 'diplom.docx'
+  let $fileName := 'diplom-2.docx'
   let $templatePath := 
     'http://dbx.iro37.ru/zapolnititul/api/v2/forms/4d902444-d4d0-4b89-86d1-da9548d3e765/template'
   return
      diploma:fillTemplate( $fields, $templatePath, $fileName )
+};
+
+declare 
+  %rest:GET
+  %rest:query-param( "id", "{ $id }" )
+  %rest:query-param( "group", "{ $group }" )
+  %rest:path( "/saivpds/api/v01/print.diploma.3" )
+function diploma:main3( $id, $group ){
+  let $fields := diploma:getDipolma.3( $id, $group )
+  let $fileName := 'diplom-3.docx'
+  let $templatePath := 
+    'http://dbx.iro37.ru/zapolnititul/api/v2/forms/920f1a57-92c3-4fcc-a40c-270b2dae1928/template'
+  return
+     diploma:fillTemplate( $fields, $templatePath, $fileName )
+};
+
+declare function diploma:getDipolma.3( $id, $group ){
+  let $data :=
+    funct:getFile( 'students.xlsx', '.'
+    )/file/table[ @label = $group ]/row[cell[@label="номер личного дела"] = $id ]
+  
+return
+    <table>
+      <row  id = 'fields'>
+        <cell id = 'Фамилия студента'>{ $data/cell[@label = 'Фамилия']/text() }</cell>
+        <cell id = 'Имя студента'>{ $data/cell[@label = 'Имя']/text() }</cell>
+        <cell id = 'Отчество студента'>{ $data/cell[@label = 'Отчество']/text() }</cell>
+        <cell id = 'регистрационный номер диплома'>{ $data/cell[@label = 'Номер диплома']/text() }</cell>
+        <cell id = 'номер'>
+          { $data/cell[ @label = 'Номер протокола' ]/text() }
+        </cell>
+        <cell id = 'число'>
+          { tokenize( $data/cell[ @label = 'Дата протокола' ]/text(), '-' )[ 3 ] }
+        </cell>
+        <cell id = 'месяц'>
+          { tokenize( $data/cell[ @label = 'Дата протокола' ]/text(), '-' )[ 2 ] }
+        </cell>
+        <cell id = 'год'>
+          { substring( tokenize( $data/cell[ @label = 'Дата протокола' ]/text(), '-' )[ 1 ], 3, 2) }
+        </cell>
+        <cell id = 'Дата выдачи диплома'>{
+          replace(
+             $data/cell[ @label = 'Дата диплома' ]/text(),
+             '(\d{4})-(\d{2})-(\d{2})',
+             '$3.$2.$1'
+           )
+        }</cell>
+      </row>
+    </table>
 };
 
 declare function diploma:getDipolma.2( $id, $group ){
