@@ -11,7 +11,8 @@ declare function mainMenu:main( $params as map(*) ){
             [ 'Табель', 'teachers.tabel' ],
             [ 'Форма 2', '#' ],
             [ 'Успеваемость за семестр', 'vedomost.semestr' ],
-            [ 'Динамика по семестрам', 'vedomost.dynamics' ]
+            [ 'Динамика по семестрам', 'vedomost.dynamics' ],
+            [ 'Печать дипломов', 'uchenik.list' ]
           )
         return
            [ $items, 't', 'Форма для преподавателя' ]

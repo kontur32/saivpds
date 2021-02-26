@@ -15,12 +15,12 @@ declare function reports:main( $params ){
           )
         return
           reports:getData( $url )
-		  
-	case "teachers.tabel"
+ 
+  case "teachers.tabel"
       return
         $params?_tpl( 'content/teacher/teachers.tabel', map{} )	  
-		      
-	case "uchenik.jour.ail-new"
+      
+  case "uchenik.jour.ail-new"
       return
         let $url := 
          web:create-url(

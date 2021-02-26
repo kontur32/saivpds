@@ -5,7 +5,7 @@ declare function uchenik.list:main( $params ){
   let $data := $params?_getFile( 'students.xlsx', '.' )
     
   let $строкиТаблицы :=
-    uchenik.list:строкиТаблицы( $data//table[@label = "ППС"]/row )
+    uchenik.list:строкиТаблицы( $data//table[@label = "ОЗО 2016"]/row )
     
   return
     map{
@@ -17,12 +17,28 @@ declare function uchenik.list:строкиТаблицы( $data ){
   <tbody>
     {
       for $i in $data
-      let $годПоступления := $i/cell[ @label = 'Год РУПа' ]/text()
+      count $c
       let $фамилия := $i/cell[ @label = 'Фамилия' ]/text()
       order by $фамилия
-      order by $годПоступления
+      let $href1 :=
+        web:create-url(
+          '/saivpds/api/v01/print.diploma.1',
+          map{
+            'id' : $i/cell[ @label = 'номер личного дела' ]/text(),
+            'group' : 'ОЗО 2016'
+          }
+        )
+      let $href2 :=
+        web:create-url(
+          '/saivpds/api/v01/print.diploma.2',
+          map{
+            'id' : $i/cell[ @label = 'номер личного дела' ]/text(),
+            'group' : 'ОЗО 2016'
+          }
+        )
       return
         <tr>
+          <td class = "text-center">{ $c }.</td>
           <td>{ $фамилия }</td>
           <td>{
             $i/cell[ @label = 'Имя' ]/text()
@@ -30,7 +46,8 @@ declare function uchenik.list:строкиТаблицы( $data ){
           <td>{
             $i/cell[ @label = 'Отчество' ]/text()
           }</td>
-          <td align='center'>{ $годПоступления }</td>
+          <td align='center'><a href = "{ $href1 }">лист 1</a></td>
+          <td align='center'><a href = "{ $href2 }">лист 2</a></td>
         </tr>
     }
   </tbody>
