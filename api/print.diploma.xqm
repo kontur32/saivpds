@@ -1,9 +1,7 @@
 module namespace diploma = "/saivpds/api/v01/print.diploma";
 
-import module namespace config = "app/config" at '../functions/config.xqm';
 import module namespace funct = "funct" at '../functions/functions.xqm';
 import module namespace dateTime = 'dateTime' at 'http://iro37.ru/res/repo/dateTime.xqm';
-
 
 declare 
   %rest:GET
@@ -42,49 +40,6 @@ function diploma:main0( $page, $id, $group ){
      diploma:fillTemplate( $fields?1, $templatePath, $fileName )
 };
 
-
-declare 
-  %rest:GET
-  %rest:query-param( "id", "{ $id }" )
-  %rest:query-param( "group", "{ $group }" )
-  %rest:path( "/saivpds/api/v01/print.diploma.1" )
-function diploma:main( $id, $group ){
-  let $fields := diploma:getDipolma.1( $id, $group )
-  let $fileName := 'diplom-1.docx'
-  let $templatePath := 
-    'http://dbx.iro37.ru/zapolnititul/api/v2/forms/f734020a-8355-4903-aaaa-f5ddb1a97042/template'
-  return
-     diploma:fillTemplate( $fields, $templatePath, $fileName )
-};
-
-declare 
-  %rest:GET
-  %rest:query-param( "id", "{ $id }" )
-  %rest:query-param( "group", "{ $group }" )
-  %rest:path( "/saivpds/api/v01/print.diploma.2" )
-function diploma:main2( $id, $group ){
-  let $fields := diploma:getDipolma.2( $id, $group )
-  let $fileName := 'diplom-2.docx'
-  let $templatePath := 
-    'http://dbx.iro37.ru/zapolnititul/api/v2/forms/4d902444-d4d0-4b89-86d1-da9548d3e765/template'
-  return
-     diploma:fillTemplate( $fields, $templatePath, $fileName )
-};
-
-declare 
-  %rest:GET
-  %rest:query-param( "id", "{ $id }" )
-  %rest:query-param( "group", "{ $group }" )
-  %rest:path( "/saivpds/api/v01/print.diploma.3" )
-function diploma:main3( $id, $group ){
-  let $fields := diploma:getDipolma.3( $id, $group )
-  let $fileName := 'diplom-3.docx'
-  let $templatePath := 
-    'http://dbx.iro37.ru/zapolnititul/api/v2/forms/920f1a57-92c3-4fcc-a40c-270b2dae1928/template'
-  return
-     diploma:fillTemplate( $fields, $templatePath, $fileName )
-};
-
 declare function diploma:getDipolma.3( $id, $group ){
   let $data :=
     funct:getFile( 'students.xlsx', '.'
@@ -96,7 +51,7 @@ return
         <cell id = 'Фамилия студента'>{ $data/cell[@label = 'Фамилия']/text() }</cell>
         <cell id = 'Имя студента'>{ $data/cell[@label = 'Имя']/text() }</cell>
         <cell id = 'Отчество студента'>{ $data/cell[@label = 'Отчество']/text() }</cell>
-        <cell id = 'регистрационный номер диплома'>{ $data/cell[@label = 'Номер диплома']/text() }</cell>
+        <cell id = 'регистрационный номер диплома'>{ $data/cell[ @label = 'Номер диплома' ]/text() }</cell>
         <cell id = 'номер'>
           { $data/cell[ @label = 'Номер протокола' ]/text() }
         </cell>
