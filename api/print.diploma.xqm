@@ -4,6 +4,45 @@ import module namespace config = "app/config" at '../functions/config.xqm';
 import module namespace funct = "funct" at '../functions/functions.xqm';
 import module namespace dateTime = 'dateTime' at 'http://iro37.ru/res/repo/dateTime.xqm';
 
+
+declare 
+  %rest:GET
+  %rest:query-param( "id", "{ $id }" )
+  %rest:query-param( "group", "{ $group }" )
+  %rest:path( "/saivpds/api/v01/print.diploma/{ $page }" )
+function diploma:main0( $page, $id, $group ){
+  let $fields := 
+    switch ( $page )
+    case '1'
+      return
+        [
+          diploma:getDipolma.1( $id, $group ),
+          'f734020a-8355-4903-aaaa-f5ddb1a97042'
+        ]
+    case '2'
+      return
+        [
+          diploma:getDipolma.2( $id, $group ),
+          '4d902444-d4d0-4b89-86d1-da9548d3e765'
+        ]
+    case '3'
+      return
+        [
+          diploma:getDipolma.3( $id, $group ),
+          '920f1a57-92c3-4fcc-a40c-270b2dae1928'
+        ]
+    default
+      return ()
+  
+  let $templatePath := 
+    'http://dbx.iro37.ru/zapolnititul/api/v2/forms/' || $fields?2 || '/template'
+    
+  let $fileName := 'diplom-' || $page || '.docx'  
+  return
+     diploma:fillTemplate( $fields?1, $templatePath, $fileName )
+};
+
+
 declare 
   %rest:GET
   %rest:query-param( "id", "{ $id }" )
