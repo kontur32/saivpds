@@ -12,7 +12,8 @@ declare function mainMenu:main( $params as map(*) ){
             [ 'Форма 2', '#' ],
             [ 'Успеваемость за семестр', 'vedomost.semestr' ],
             [ 'Динамика по семестрам', 'vedomost.dynamics' ],
-            [ 'Печать дипломов', 'uchenik.list' ]
+            [ 'Печать дипломов', 'uchenik.list' ],
+            [ 'Печать карточек', 'cards' ]
           )
         return
            [ $items, 't', 'Форма для преподавателя' ]
