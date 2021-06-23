@@ -99,7 +99,7 @@ let $оценкиПоПредметам :=
           return
             <row>
               <cell>{ $название }</cell>
-              <cell>{ $i[ last() ]/ЗЕТ/text() }</cell>
+              <cell>{ $i[ last() ]/ЗЕТ/text() } з.е.</cell>
               <cell>{ $i[ last() ]/оценкаПрописью/text() }</cell>
             </row>
         }
