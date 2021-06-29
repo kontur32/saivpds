@@ -93,7 +93,7 @@ let $оценкиПоПредметам :=
         {
           for $i in $notes
           where $i[ формаОтчетности/text() = ( 'экзамен', 'диф.зачет', 'зачет' ) ]
-          order by $i/семестр/text()
+          (: order by $i/семестр/text() :)
           let $название := $i/название/text()
           group by $название
           return
