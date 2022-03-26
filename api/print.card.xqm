@@ -2,12 +2,13 @@ module namespace card = "/saivpds/api/v01/print.diploma";
 
 import module namespace diploma = "/saivpds/api/v01/print.diploma" at 'print.diploma.xqm';
 import module namespace funct = "funct" at '../functions/functions.xqm';
+import module namespace config = "app/config"  at '../functions/config.xqm';
 
 declare 
   %rest:GET
   %rest:path( "/saivpds/api/v01/print/groups/{ $group }/students/{ $id }/card/years/{ $year }" )
 function card:main( $id, $group, $year ){
-
+let $host := $config:param('host')
 let $templatePath := 
     'http://dbx.iro37.ru/zapolnititul/api/v2/forms/f2928d8c-39a6-4996-977d-ed842930ee1b/template'
 
@@ -64,7 +65,7 @@ let $fields :=
     </table>
     
   return
-    diploma:fillTemplate( $fields, $templatePath, 'card.docx' )
+    diploma:fillTemplate( $fields, $templatePath, 'card.docx',  $host)
 };
 
 declare function card:курсовыеЗаСеместр( $оценки, $номерСеместра ){

@@ -2,6 +2,7 @@ module namespace diploma = "/saivpds/api/v01/print.diploma";
 
 import module namespace funct = "funct" at '../functions/functions.xqm';
 import module namespace dateTime = 'dateTime' at 'http://iro37.ru/res/repo/dateTime.xqm';
+import module namespace config = "app/config"  at '../functions/config.xqm';
 
 declare 
   %rest:GET
@@ -9,18 +10,19 @@ declare
   %rest:query-param( "group", "{ $group }" )
   %rest:path( "/saivpds/api/v01/print.diploma/{ $page }" )
 function diploma:main0( $page, $id, $group ){
+  let $host := $config:param('host')
   let $fields := 
     switch ( $page )
     case '1'
       return
         [
-          diploma:getDipolma.1( $id, $group ),
+          diploma:getDipolma.1( $id, $group, $host ),
           'f734020a-8355-4903-aaaa-f5ddb1a97042'
         ]
     case '2'
       return
         [
-          diploma:getDipolma.2( $id, $group ),
+          diploma:getDipolma.2( $id, $group, $host ),
           '4d902444-d4d0-4b89-86d1-da9548d3e765'
         ]
     case '3'
@@ -37,7 +39,7 @@ function diploma:main0( $page, $id, $group ){
     
   let $fileName := 'diplom-' || $page || '.docx'  
   return
-     diploma:fillTemplate( $fields?1, $templatePath, $fileName )
+     diploma:fillTemplate( $fields?1, $templatePath, $fileName, $host )
 };
 
 declare function diploma:getDipolma.3( $id, $group ){
@@ -75,12 +77,12 @@ return
     </table>
 };
 
-declare function diploma:getDipolma.2( $id, $group ){
+declare function diploma:getDipolma.2( $id, $group, $host ){
   let $формыОтчетности := ( 'экзамен', 'диф.зачет', 'зачет' )
   let $notes := 
     funct:getFileWithParams( 
         'Аттестация/ДО_набор.xlsx',
-        'http://localhost:9984/static/saivpds/funct/ocenki.student.xq',
+        $host || '/static/saivpds/funct/ocenki.student.xq',
         map{
           'id' : $id,
           'group' : $group
@@ -121,7 +123,7 @@ return
   </table>
 };
 
-declare function diploma:getDipolma.1( $id, $group ){
+declare function diploma:getDipolma.1( $id, $group, $host ){
   let $data :=
     funct:getFile( 'students.xlsx', '.'
     )/file/table[ @label = $group ]/row[cell[@label="номер личного дела"] = $id ]
@@ -129,7 +131,7 @@ declare function diploma:getDipolma.1( $id, $group ){
   let $курсовые := 
     funct:getFileWithParams( 
         'Аттестация/ДО_набор.xlsx',
-        'http://localhost:9984/static/saivpds/funct/ocenki.student.xq',
+         $host || '/static/saivpds/funct/ocenki.student.xq',
         map{
           'id' : $id,
           'group' : $group
@@ -184,7 +186,7 @@ return
     </table>
 };
 
-declare function diploma:fillTemplate( $fields, $templatePath, $fileName ){
+declare function diploma:fillTemplate( $fields, $templatePath, $fileName, $host ){
   let $template :=
     fetch:binary(
       $templatePath
@@ -208,7 +210,7 @@ declare function diploma:fillTemplate( $fields, $templatePath, $fileName ){
   let $response := 
      http:send-request (
         $request,
-        'http://localhost:9984/api/v1/ooxml/docx/template/complete'
+        'http://iro37.ru:9984/api/v1/ooxml/docx/template/complete'
       )
   return
      (
