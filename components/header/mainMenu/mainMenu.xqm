@@ -8,15 +8,13 @@ declare function mainMenu:main( $params as map(*) ){
         let $items := 
           (
             [ 'Журнал пропусков', 'teachers.konduit' ],
-            [ 'Табель', 'teachers.tabel' ],
-            [ 'Форма 2', '#' ],
             [ 'Успеваемость за семестр', 'vedomost.semestr' ],
             [ 'Динамика по семестрам', 'vedomost.dynamics' ],
             [ 'Печать дипломов', 'uchenik.list' ],
             [ 'Печать карточек', 'cards' ]
           )
         return
-           [ $items, 't', 'Форма для преподавателя' ]
+           [ $items, 't', 'Контингент' ]
     case 'student'
       return
         let $items := 
@@ -34,6 +32,8 @@ declare function mainMenu:main( $params as map(*) ){
       return
         [ ( [ '', '' ] ), '', '' ]
 
+
+  
   let $меню :=
     map{
       'главная' : '/saivpds/' || $пункты?2,

@@ -5,7 +5,7 @@ declare function uchenik.list:main( $params ){
   let $data := $params?_getFile( 'students.xlsx', '.' )
     
   let $строкиТаблицы :=
-    uchenik.list:строкиТаблицы( $data//table[ @label = "ОЗО 2016" ]/row )
+    uchenik.list:строкиТаблицы( $data//table[ @label = "ОЗО 2017" ]/row )
     
   return
     map{
@@ -20,6 +20,7 @@ declare function uchenik.list:строкиТаблицы( $data ){
       count $c
       let $фамилия := $i/cell[ @label = 'Фамилия' ]/text()
       order by $фамилия
+      count $п
       let $href :=
         for $страницы in ( '1', '2', '3' )
         return
@@ -27,12 +28,12 @@ declare function uchenik.list:строкиТаблицы( $data ){
             '/saivpds/api/v01/print.diploma/' || $страницы,
             map{
               'id' : $i/cell[ @label = 'номер личного дела' ]/text(),
-              'group' : 'ОЗО 2016'
+              'group' : 'ОЗО 2017'
             }
           )
       return
         <tr>
-          <td class = "text-center">{ $c }.</td>
+          <td class = "text-center">{ $п }.</td>
           <td>{ $фамилия }</td>
           <td>{
             $i/cell[ @label = 'Имя' ]/text()
