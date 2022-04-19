@@ -10,7 +10,7 @@ declare
   %rest:query-param( "group", "{ $group }" )
   %rest:path( "/saivpds/api/v01/print.diploma/{ $page }" )
 function diploma:main0( $page, $id, $group ){
-  let $host := $config:param('host')
+  let $host := 'http://iro37.ru:9984/'
   let $fields := 
     switch ( $page )
     case '1'
@@ -79,23 +79,24 @@ return
 
 declare function diploma:getDipolma.2( $id, $group, $host ){
   let $формыОтчетности := ( 'экзамен', 'диф.зачет', 'зачет' )
-  let $notes := 
+  let $data := 
     funct:getFileWithParams( 
         'Аттестация/ДО_набор.xlsx',
-        $host || '/static/saivpds/funct/ocenki.student.xq',
+        'http://iro37.ru:9984/static/saivpds/funct/ocenki.student.xq',
         map{
           'id' : $id,
           'group' : $group
         }
       )
-      /json/оценки/дисциплина
-  
+     
+  let $notes := $data/json/оценки/дисциплина
+
 let $оценкиПоПредметам := 
       <table>
         {
           for $i in $notes
           where $i[ формаОтчетности/text() = ( 'экзамен', 'диф.зачет', 'зачет' ) ]
-          (: order by $i/семестр/text() :)
+          order by $i/семестр/text()
           let $название := $i/название/text()
           group by $название
           return
@@ -131,7 +132,7 @@ declare function diploma:getDipolma.1( $id, $group, $host ){
   let $курсовые := 
     funct:getFileWithParams( 
         'Аттестация/ДО_набор.xlsx',
-         $host || '/static/saivpds/funct/ocenki.student.xq',
+        'http://iro37.ru:9984/static/saivpds/funct/ocenki.student.xq',
         map{
           'id' : $id,
           'group' : $group
