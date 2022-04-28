@@ -23,6 +23,7 @@ function diploma:main0( $page, $id, $group ){
       return
         [
           diploma:getDipolma.2( $id, $group, $host ),
+          (:fa2ea490-35df-4395-bfd7-0129affa1617 4d902444-d4d0-4b89-86d1-da9548d3e765:)
           '4d902444-d4d0-4b89-86d1-da9548d3e765'
         ]
     case '3'
@@ -108,20 +109,75 @@ let $оценкиПоПредметам :=
         }
       </table>
 
-let $ВКР :=
-  $notes[ формаОтчетности/text() = "выпускная квалификационная работа"]
-return
-  <table>
-    <row  id = 'fields'>
-      <cell id = "названиеВКР" contentType = 'field'>{ $ВКР/название/text()}</cell>
-      <cell id = "оцВКР" contentType = 'field'>{ $ВКР/оценкаПрописью/text() }</cell>
-    </row>
-    <row id = 'tables'>
-      <cell id = 'оценки'>
-        { $оценкиПоПредметам }
-      </cell>
-    </row>
-  </table>
+  let $ВКР :=
+    $notes[ формаОтчетности/text() = "выпускная квалификационная работа"]
+  return
+    <table>
+      <row  id = 'fields'>
+        <cell id = "названиеВКР" contentType = 'field'>{ $ВКР/название/text()}</cell>
+        <cell id = "оцВКР" contentType = 'field'>{ $ВКР/оценкаПрописью/text() }</cell>
+      </row>
+      <row id = 'tables'>
+        <cell id = 'Оценки1'>
+          <table>
+            { $оценкиПоПредметам/row[position()<=42] }
+          </table>
+        </cell>
+        <cell id = 'Оценки2'>
+          <table>
+            { $оценкиПоПредметам/row[position()>42] }
+            <row><cell/><cell/><cell/></row>
+            <row><cell/><cell/><cell/></row>
+           </table>
+        </cell>
+        <cell id = 'Оценки3'>
+          <table>
+            <row>
+              <cell>Итоговая аттестация:</cell>
+              <cell>6 з.е.</cell>
+              <cell>X</cell>
+            </row>
+            <row>
+              <cell>в том числе:</cell>
+              <cell></cell>
+              <cell></cell>
+            </row>
+            <row>
+              <cell>Итоговый комплексный экзамен по направлению подготовки</cell>
+              <cell></cell>
+              <cell></cell>
+            </row>
+            <row>
+              <cell>выпускная квалификационная работа (дипломная работа)</cell>
+              <cell></cell>
+              <cell>хорошо</cell>
+            </row>
+            <row>
+              <cell>«{ $ВКР/название/text()}»</cell>
+              <cell></cell>
+              <cell></cell>
+            </row>
+            <row><cell/><cell/><cell/></row>
+            <row><cell/><cell/><cell/></row>
+            <row>
+              <cell>Объем образовательной программы</cell>
+              <cell>240 з.е.</cell>
+              <cell>Х</cell>
+            </row>
+            <row>
+              <cell>в том числе объем работы обучающихся во взаимодействии с</cell>
+              <cell></cell>
+              <cell></cell>
+            </row>
+            <row>
+              <cell>преподавателем:</cell>
+              <cell>5444 час.</cell>
+              <cell>Х</cell>
+            </row>
+          </table>
+        </cell>
+      </row>
+    </table>
 };
 
 declare function diploma:getDipolma.1( $id, $group, $host ){
